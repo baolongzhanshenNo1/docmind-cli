@@ -1,7 +1,7 @@
 <h1 align="center">DocMind CLI</h1>
 
 <p align="center">
-  <strong>专治 Word 排版疑难杂症</strong> — 本地离线 · 深度 OOXML · MIT 开源
+  <strong>AI 驱动的智能文档排版工具</strong> — 将"2 小时手工调整"压缩为"2 分钟对话指令"
 </p>
 
 <p align="center">
@@ -12,18 +12,19 @@
 
 ---
 
-## 📸 Demo 画廊
+## 项目简介
 
-<p align="center">
-  <strong>目录页 — 修前（无页码） vs 修后（罗马数字"第Ⅰ页"）</strong><br/>
-  <img src="assets/toc_before.png" width="45%" alt="Before - no page number"/>
-  <img src="assets/toc_after.png" width="45%" alt="After - roman numeral Ⅰ"/>
-</p>
+**DocMind** 是一个基于深度 OOXML 的智能文档排版引擎。给它一篇格式混乱的论文，加上一份学校规范模板，它能自动完成字体、标题层级、页眉、页码、分节符、奇偶页等全套排版——**只修格式、不改一字**。
 
-<p align="center">
-  <strong>封面 — 修后（页眉已清除）</strong><br/>
-  <img src="assets/cover_after.png" width="45%" alt="Cover - header cleared"/>
-</p>
+| 维度 | 说明 |
+|------|------|
+| 📂 定位 | 排版修正工具（非内容生成器、非 AI 代写） |
+| 🏠 运行方式 | 本地离线，数据不出电脑 |
+| 🔧 核心能力 | 字体分离（中文/西文）、页眉独立化、页码分节、奇偶页强制、分节符拆分、Fixer 诊断 + 验证 |
+| 🎯 目标用户 | 高校学生（论文）、律师（合同）、政企（标书/公文）、开发团队（技术文档） |
+| 📊 市场规模 | 年毕业 500 万本硕博 + 全国 4 万律所 + 年千亿政府采购 |
+| 🧩 开源协议 | MIT — 完全免费，可商用 |
+| 🔗 相关项目 | [DocMind Desktop](https://github.com/baolongzhanshenNo1/docmind-desktop) — 对话式 Agent 桌面应用 |
 
 ---
 
@@ -39,9 +40,6 @@ docmind format my_thesis.docx --spec university_spec.docx
 
 # 提取规范模板规则 → YAML
 docmind analyze university_spec.docx
-
-# 奇偶页强制（需要 LibreOffice）
-docmind enforce my_thesis.docx
 ```
 
 ---
@@ -64,8 +62,8 @@ docmind enforce my_thesis.docx
 
 | 依赖 | |
 |------|------|
-| Python ≥ 3.11 | `pip install .` 自动安装 |
-| [LibreOffice](https://www.libreoffice.org/) | 仅 `enforce` 命令需要 |
+| Python ≥ 3.11 | |
+| LibreOffice | 仅 `enforce` 命令需要 |
 
 ---
 
@@ -81,8 +79,6 @@ pytest tests/ -q
 ## 📄 License
 
 MIT — 详见 [LICENSE](LICENSE)
-
----
 
 <p align="center">
   <strong>DocMind</strong> — <em>专治 Word 排版疑难杂症</em><br/>
