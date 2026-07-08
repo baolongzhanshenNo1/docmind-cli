@@ -1,7 +1,7 @@
 <h1 align="center">DocMind CLI</h1>
 
 <p align="center">
-  <strong>AI 驱动的智能文档排版工具</strong> — 将"2 小时手工调整"压缩为"2 分钟对话指令"
+  <strong>AI 驱动的智能文档排版工具</strong> — 专治 Word 排版疑难杂症
 </p>
 
 <p align="center">
@@ -12,19 +12,20 @@
 
 ---
 
-## 项目简介
+## 能解决什么问题
 
-**DocMind** 是一个基于深度 OOXML 的智能文档排版引擎。给它一篇格式混乱的论文，加上一份学校规范模板，它能自动完成字体、标题层级、页眉、页码、分节符、奇偶页等全套排版——**只修格式、不改一字**。
+如果你写过长文档——毕业论文、合同、标书、技术手册——你一定经历过这些：
 
-| 维度 | 说明 |
-|------|------|
-| 📂 定位 | 排版修正工具（非内容生成器、非 AI 代写） |
-| 🏠 运行方式 | 本地离线，数据不出电脑 |
-| 🔧 核心能力 | 字体分离（中文/西文）、页眉独立化、页码分节、奇偶页强制、分节符拆分、Fixer 诊断 + 验证 |
-| 🎯 目标用户 | 高校学生（论文）、律师（合同）、政企（标书/公文）、开发团队（技术文档） |
-| 📊 市场规模 | 年毕业 500 万本硕博 + 全国 4 万律所 + 年千亿政府采购 |
-| 🧩 开源协议 | MIT — 完全免费，可商用 |
-| 🔗 相关项目 | [DocMind Desktop](https://github.com/baolongzhanshenNo1/docmind-desktop) — 对话式 Agent 桌面应用 |
+| 折磨 | DocMind 怎么做 |
+|------|---------------|
+| 封面莫名其妙出现页眉，删不掉 | 前置页（封面/声明）自动清空页眉页码 |
+| 正文各章页眉全是"参考文献" | 每节创建独立页眉，各章自动显示对应标题 |
+| 目录页码对不上实际内容 | 页码分节编号：前置罗马数字、正文阿拉伯数字 |
+| 每章开头歪在偶数页上 | 奇偶页强制：空白页插入 + 奇数页起始 |
+| 中英文混排字体乱套 | 中文宋体/标题黑体，英文 Times New Roman，分离设置不打架 |
+| 改完一版学校规范又变了，重调一遍 | 规范模板驱动：换一份规范 docx，重新跑一下命令 |
+
+**核心逻辑**：给它一份"格式乱的论文"和一份"学校规范模板"，把格式差异找出来修掉——**只修格式、不动文字内容**。
 
 ---
 
@@ -35,39 +36,64 @@ git clone https://github.com/baolongzhanshenNo1/docmind-cli.git
 cd docmind-cli
 pip install .
 
-# 排版论文（最常用）
+# 最常用：论文按规范排版
 docmind format my_thesis.docx --spec university_spec.docx
 
-# 提取规范模板规则 → YAML
+# 提取规范模板的格式规则 → YAML
 docmind analyze university_spec.docx
+```
+
+### `format` 示例输出
+
+```
+  目标文档 → my_thesis.docx
+  规范模板 → university_spec.docx
+  正在排版… ⣾
+
+   📄 修正项  61
+   🔄 残留    0
+   ⚠️  诊断    0
+   📦 输出    my_thesis_formatted.docx
+
+✅ 排版完成
 ```
 
 ---
 
-## 📋 它能修正什么？
+## 命令参考
+
+| 命令 | 作用 |
+|------|------|
+| `docmind format <论文> --spec <规范>` | 按规范模板排版 |
+| `docmind analyze <规范>` | 提取格式规则 → YAML |
+| `docmind enforce <文档>` | 奇偶页强制（需 LibreOffice） |
+
+---
+
+## 能力清单
 
 | 能力 | 说明 |
 |------|------|
-| 📐 页眉 | 正文各章独立页眉（章标题）、封面/声明清空 |
-| 📄 页码 | 罗马/阿拉伯分节编号、前置页不显示 |
-| 🔢 奇偶页 | 每章奇数页起始、扉页空白页 |
-| 🎨 字体 | 中文宋体/标题黑体、英文 TNR（Ascii/EastAsian 分离） |
-| 📏 边距 | 严格对齐规范 |
-| 📑 分节符 | 拆分合并节、补断链引用 |
-| ✅ 诊断 | 排版后自动诊断，0 残留 |
+| 📐 页眉 | 全文各节独立页眉（封面/声明自动清空） |
+| 📄 页码 | 前置罗马数字 / 正文阿拉伯数字 / 封面前置无页码 |
+| 🔢 奇偶页 | 每章奇数页起始 / 扉页空白页插入 |
+| 🎨 字体 | 中文宋体+标题黑体 / 英文 Times New Roman（Ascii/EastAsian 分离） |
+| 📏 边距 | 严格对齐规范模板 |
+| 📑 分节符 | 拆分合并节 / 补断链引用 |
+| ✅ 诊断 | 排版后自动 Fixer 诊断，0 残留才通过 |
 
 ---
 
-## 📦 环境
+## 环境
 
-| 依赖 | |
-|------|------|
-| Python ≥ 3.11 | |
-| LibreOffice | 仅 `enforce` 命令需要 |
+- Python ≥ 3.11
+- LibreOffice（仅 `enforce` 命令需要）
+
+Python 依赖通过 `pip install .` 自动安装。
 
 ---
 
-## 🧪 测试
+## 测试
 
 ```bash
 pip install -e ".[dev]"
@@ -76,11 +102,35 @@ pytest tests/ -q
 
 ---
 
-## 📄 License
+## 架构
+
+```
+docmind format xxx.docx --spec yyy.docx
+      │
+      ▼
+  DocMindAgent (pipeline/agent.py)
+      │
+      ├── SpecReader   ── 从规范模板提取字体/边距/页眉格式
+      ├── DocDiscover  ── 自动发现文档章节结构
+      ├── Reconciler   ── 差异对比 → 生成修复计划
+      ├── Writer       ── ZIP 级 OOXML 写入（7种操作）
+      └── Fixer        ── 诊断执行结果（8种验证器）
+```
+
+所有操作基于 OOXML ZIP 层直接修改，不依赖 Word 或 LibreOffice 运行时。
+
+---
+
+## 相关项目
+
+- [DocMind Desktop](https://github.com/baolongzhanshenNo1) — 对话式 Agent 桌面应用（Tauri + Vue 3），自然语言指令排版
+
+---
+
+## License
 
 MIT — 详见 [LICENSE](LICENSE)
 
 <p align="center">
-  <strong>DocMind</strong> — <em>专治 Word 排版疑难杂症</em><br/>
   <sub>by <a href="https://github.com/baolongzhanshenNo1">baolongzhanshenNo1</a></sub>
 </p>
