@@ -62,7 +62,7 @@ known-first-party = ["generator", "enforce", "tests"]
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["docmind*", "pipeline*"]
+include = ["docmind*", "pipeline*", "cli_new*"]
 
 [tool.ruff.format]
 quote-style = "single"
