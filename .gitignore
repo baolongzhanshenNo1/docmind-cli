@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.venv/
+env/
+*.log
+output/_cli_demo.docx
+output/_spec.yaml
+output/_demo_*.docx
+output/_demo_*.pdf
+output/_demo_audit/
+output/_fixpdf/
+output/_demo_pdf*/
