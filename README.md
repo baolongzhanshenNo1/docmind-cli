@@ -1,116 +1,90 @@
-# DocMind CLI
+<h1 align="center">DocMind CLI</h1>
 
-**专治 Word 排版疑难杂症** — 本地离线 · 深度 OOXML · AI Agent 实时协作
+<p align="center">
+  <strong>专治 Word 排版疑难杂症</strong> — 本地离线 · 深度 OOXML · MIT 开源
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT"></a>
+  <a href="#"><img src="https://img.shields.io/badge/python-≥3.11-blue" alt="Python 3.11+"></a>
+  <a href="#"><img src="https://img.shields.io/badge/platform-Windows%20|%20macOS%20|%20Linux-lightgrey" alt="Platform"></a>
+</p>
 
 ---
 
-## 安装
+## 📸 Demo 画廊
+
+<p align="center">
+  <strong>目录页 — 修前（无页码） vs 修后（罗马数字"第Ⅰ页"）</strong><br/>
+  <img src="assets/toc_before.png" width="45%" alt="Before - no page number"/>
+  <img src="assets/toc_after.png" width="45%" alt="After - roman numeral Ⅰ"/>
+</p>
+
+<p align="center">
+  <strong>封面 — 修后（页眉已清除）</strong><br/>
+  <img src="assets/cover_after.png" width="45%" alt="Cover - header cleared"/>
+</p>
+
+---
+
+## ⚡ 快速开始
 
 ```bash
 git clone https://github.com/baolongzhanshenNo1/docmind-cli.git
 cd docmind-cli
 pip install .
-```
 
-## 用法
-
-```bash
-# 对论文按学校规范模板排版（格式修正，不改文字）
+# 排版论文（最常用）
 docmind format my_thesis.docx --spec university_spec.docx
 
-# 提取规范模板的格式规则（字体/边距/页眉/页码）→ YAML
-docmind analyze university_spec.docx --output spec_rules.yaml
+# 提取规范模板规则 → YAML
+docmind analyze university_spec.docx
 
-# 奇偶页强制（空白页、页眉重整）
-docmind enforce my_thesis.docx --libreoffice /path/to/soffice.exe
-```
-
-## 命令参考
-
-### `docmind format <论文.docx> --spec <规范.docx> [--output <out.docx>]`
-
-自动分析规范模板的格式规则 → 发现文档章节结构 → 差异对比 → 应用修正。
-
-**示例输出：**
-
-```
-┌──────────────────────────────────────────┐
-│  DocMind — 专治 Word 排版疑难杂症        │
-└──────────────────────────────────────────┘
-
-  目标文档 → my_thesis.docx
-  规范模板 → university_spec.docx
-
-  正在排版: my_thesis.docx… ━━━━━━━━━━━━━
-
-   📄 修正项  61
-   🔄 残留    0
-   ⚠️  诊断    0
-   📦 输出    my_thesis_formatted.docx
-
-✅ 排版完成
-```
-
-### `docmind analyze <规范.docx> [--output <template.yaml>]`
-
-提取规范模板的字体/边距/页眉/页码格式规则，生成结构化 YAML。
-
-### `docmind enforce <文档.docx> [--libreoffice ...] [--sections ...]`
-
-对已有 docx 执行奇偶页强制：扉页空白页插入、各章节从奇数页开始、页眉重整。
-
-> 需要 [LibreOffice](https://www.libreoffice.org/) 用于 PDF 渲染与页码检测。
-
----
-
-## 特性
-
-- 📐 **排版修正，非生成** — 规范是尺子，量哪里不对修哪里，一字不改
-- 🏠 **本地离线** — 全部在本地运行，文档不用上传
-- 🧩 **深度 OOXML** — 直接操作 OOXML ZIP 层级；页眉/页脚/分节符/页码/字体完全控制
-- 📄 **支持** — 论文（thesis）、公文（gov_doc）、技术文档（tech_doc）、合同审查（contract）、文档翻译（translate）
-- 🔧 **可扩展** — 基于可组合 Steps 架构，加新格式模板无需改引擎
-- 🎨 **Rich 终端渲染** — 彩色状态、表格结果、进度提示
-
----
-
-## 项目结构
-
-```
-docmind-cli/
-├── cli_new.py               # CLI 入口（click + rich）
-├── docmind/
-│   ├── tools/               # 5 个工具（thesis / gov_doc / tech_doc / contract / translate）
-│   ├── engine/              # 核心排版引擎（writer / fixer / enforce / spec_reader）
-│   └── steps/               # 可组合排版步骤
-├── pipeline/                # Agent v3 六步闭环 Pipeline
-├── templates/               # YAML 模板（thesis.yaml 等）
-└── tests/                   # 单元测试（pytest）
+# 奇偶页强制（需要 LibreOffice）
+docmind enforce my_thesis.docx
 ```
 
 ---
 
-## 依赖
+## 📋 它能修正什么？
 
-- Python ≥ 3.11
-- LibreOffice（仅 `enforce` 命令需要）
-- 核心 Python 包：`python-docx`, `PyYAML`, `lxml`, `click`, `rich`, `pymupdf`, `httpx`
-
----
-
-## 开源协议
-
-MIT License — 见 [LICENSE](LICENSE)
-
----
-
-## 路线图
-
-- [ ] 支持更多领域模板（law、gov、tech）
-- [ ] 内置 AI Agent 对话式排版（需要 LLM API key）
-- [ ] 企业版管理后台
-- [ ] Word 插件
+| 能力 | 说明 |
+|------|------|
+| 📐 页眉 | 正文各章独立页眉（章标题）、封面/声明清空 |
+| 📄 页码 | 罗马/阿拉伯分节编号、前置页不显示 |
+| 🔢 奇偶页 | 每章奇数页起始、扉页空白页 |
+| 🎨 字体 | 中文宋体/标题黑体、英文 TNR（Ascii/EastAsian 分离） |
+| 📏 边距 | 严格对齐规范 |
+| 📑 分节符 | 拆分合并节、补断链引用 |
+| ✅ 诊断 | 排版后自动诊断，0 残留 |
 
 ---
 
-**DocMind** — *专治 Word 排版疑难杂症*
+## 📦 环境
+
+| 依赖 | |
+|------|------|
+| Python ≥ 3.11 | `pip install .` 自动安装 |
+| [LibreOffice](https://www.libreoffice.org/) | 仅 `enforce` 命令需要 |
+
+---
+
+## 🧪 测试
+
+```bash
+pip install -e ".[dev]"
+pytest tests/ -q
+```
+
+---
+
+## 📄 License
+
+MIT — 详见 [LICENSE](LICENSE)
+
+---
+
+<p align="center">
+  <strong>DocMind</strong> — <em>专治 Word 排版疑难杂症</em><br/>
+  <sub>by <a href="https://github.com/baolongzhanshenNo1">baolongzhanshenNo1</a></sub>
+</p>
