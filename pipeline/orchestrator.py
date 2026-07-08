@@ -11,7 +11,6 @@ import shutil, sys
 from pathlib import Path
 
 # Archived modules (docmind3) path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / '_archive' / 'docmind'))
 
 from .config import PipelineConfig
 from .preprocessor import preprocess

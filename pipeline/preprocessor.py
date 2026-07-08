@@ -10,7 +10,6 @@ import re, sys, zipfile, shutil
 from pathlib import Path
 
 # Archived modules (docmind3) path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / '_archive' / 'docmind'))
 from lxml import etree
 
 W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'

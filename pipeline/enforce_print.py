@@ -10,7 +10,6 @@ from lxml import etree
 import fitz
 
 # Archived modules (generator) path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / '_archive' / 'docmind'))
 
 from .config import PipelineConfig
 

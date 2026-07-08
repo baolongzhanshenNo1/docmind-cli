@@ -359,28 +359,29 @@ def _parse_header_footer_xml(xml_bytes: bytes) -> dict:
                 if borders:
                     fmt['borders'] = borders
 
-        # 提取第一个 run 的字符格式
+        # 提取 run 字符格式：逐属性取第一个出现的值。
+        # 不能死认第一个 run —— 页脚首个 run 常是无 sz 的空白占位符（页码文字在后续 run）。
         for r in p.iter(f'{{{W}}}r'):
             rPr = r.find(f'{{{W}}}rPr')
-            if rPr is not None:
-                rf = rPr.find(f'{{{W}}}rFonts')
-                if rf is not None:
-                    east = rf.get(f'{{{W}}}eastAsia')
-                    ascii_ = rf.get(f'{{{W}}}ascii')
-                    if east:
-                        fmt['font_east'] = east
-                    if ascii_:
-                        fmt['font_ascii'] = ascii_
+            if rPr is None:
+                continue
+            rf = rPr.find(f'{{{W}}}rFonts')
+            if rf is not None:
+                east = rf.get(f'{{{W}}}eastAsia')
+                ascii_ = rf.get(f'{{{W}}}ascii')
+                if east and 'font_east' not in fmt:
+                    fmt['font_east'] = east
+                if ascii_ and 'font_ascii' not in fmt:
+                    fmt['font_ascii'] = ascii_
 
-                sz = rPr.find(f'{{{W}}}sz')
-                if sz is not None:
-                    fmt['font_size_pt'] = int(sz.get(f'{{{W}}}val')) / 2
+            sz = rPr.find(f'{{{W}}}sz')
+            if sz is not None and 'font_size_pt' not in fmt:
+                fmt['font_size_pt'] = int(sz.get(f'{{{W}}}val')) / 2
 
-                b = rPr.find(f'{{{W}}}b')
-                if b is not None:
-                    fmt['bold'] = b.get(f'{{{W}}}val', 'true') not in ('false', '0')
+            b = rPr.find(f'{{{W}}}b')
+            if b is not None and 'bold' not in fmt:
+                fmt['bold'] = b.get(f'{{{W}}}val', 'true') not in ('false', '0')
 
-                break
         break  # 只看第一个段落
 
     return fmt

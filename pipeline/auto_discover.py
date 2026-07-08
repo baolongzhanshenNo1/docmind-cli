@@ -6,7 +6,6 @@ import sys
 from pathlib import Path
 
 # Archived modules (docmind3) path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / '_archive' / 'docmind'))
 
 import docx
 from docx.oxml.ns import qn

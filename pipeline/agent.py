@@ -31,7 +31,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 # Archived modules (enforce) path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / '_archive' / 'docmind'))
 from typing import Any, Optional, Union
 
 from lxml import etree
@@ -394,6 +393,11 @@ class DocMindAgent:
         font_east = body_rules.get("font_east", "宋体")
         font_ascii = body_rules.get("font_ascii", "Times New Roman")
 
+        # 页眉字号：从规范 header_format 读，读不到 fallback 到 10.5pt(小四)=21 half-points
+        hdr_fmt = self._spec_rules.get("header_format", {}) or {}
+        hdr_size_pt = hdr_fmt.get("font_size_pt")
+        header_font_size = str(int(round(hdr_size_pt * 2))) if hdr_size_pt else "21"
+
         with zipfile.ZipFile(self._target_path, "r") as z:
             header_names = [n for n in z.namelist() if "header" in n and n.endswith(".xml")]
 
@@ -404,7 +408,7 @@ class DocMindAgent:
                     "header_path": hdr_name,
                     "font_ascii": font_ascii,
                     "font_eastAsia": font_east,
-                    "font_size": "18",  # 小五号 = 9pt = 18 half-points
+                    "font_size": header_font_size,
                 },
             })
 
@@ -425,6 +429,10 @@ class DocMindAgent:
         body_rules = self._spec_rules.get("body", {})
         font_ascii = body_rules.get("font_ascii", "Times New Roman")
 
+        # 页码字号：从规范 footer_format 读，读不到 fallback 到 10pt(五号)=20 half-points
+        ftr_size_pt = footer_fmt.get("font_size_pt")
+        footer_font_size = str(int(round(ftr_size_pt * 2))) if ftr_size_pt else "20"
+
         for ftr_name in footer_names:
             plan.append({
                 "action": "add_page_number",
@@ -434,7 +442,7 @@ class DocMindAgent:
                     "alignment": alignment,
                     "font_eastAsia": font_ascii,
                     "font_ascii": font_ascii,
-                    "font_size": "18",
+                    "font_size": footer_font_size,
                 },
             })
 
@@ -843,13 +851,17 @@ class DocMindAgent:
                     })
 
         if section_headers:
+            # 页眉字号：从规范 header_format 读，读不到 fallback 到 10.5pt(小四)=21 half-points
+            hdr_fmt = self._spec_rules.get("header_format", {}) or {}
+            hdr_size_pt = hdr_fmt.get("font_size_pt")
+            header_font_size = str(int(round(hdr_size_pt * 2))) if hdr_size_pt else "21"
             plan.append({
                 'action': 'create_section_headers',
                 'params': {
                     'section_headers': section_headers,
                     'font_eastAsia': font_east,
                     'font_ascii': font_ascii,
-                    'font_size': '18',
+                    'font_size': header_font_size,
                 },
             })
 

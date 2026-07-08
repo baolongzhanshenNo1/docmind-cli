@@ -11,7 +11,6 @@ from docx.oxml.ns import qn
 from docx.shared import Pt, Cm
 
 # Archived modules (docmind3) path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / '_archive' / 'docmind'))
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 from .config import PipelineConfig

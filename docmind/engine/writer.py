@@ -685,9 +685,11 @@ def _create_section_headers(target_path: Path, params: dict) -> None:
                     data = settings_data
                 zout.writestr(item, data)
             for (dt, et), (df, dr, ef, er) in used_texts.items():
-                zout.writestr(zipfile.ZipInfo(f'word/{df}'), _make_hdr_xml_via_python_docx(dt))
+                zout.writestr(zipfile.ZipInfo(f'word/{df}'),
+                              _make_hdr_xml_via_python_docx(dt, font_size, font_eastAsia, font_ascii))
                 if ef:
-                    zout.writestr(zipfile.ZipInfo(f'word/{ef}'), _make_hdr_xml_via_python_docx(et))
+                    zout.writestr(zipfile.ZipInfo(f'word/{ef}'),
+                                  _make_hdr_xml_via_python_docx(et, font_size, font_eastAsia, font_ascii))
 
     shutil.move(tmp_path, str(target_path))
 
@@ -1025,8 +1027,10 @@ def fix_from_reconciler_output(reconciler_output: dict, target_path: Union[str, 
     raise NotImplementedError("请在 agent.py 中使用 _reconciler_to_fix_plan()")
 
 
-def _make_hdr_xml_via_python_docx(text: str) -> bytes:
-    """用 python-docx 创建临时文档，提取其 header XML。"""
+def _make_hdr_xml_via_python_docx(text: str, font_size: str = "21",
+                                  font_eastAsia: str = "宋体",
+                                  font_ascii: str = "Times New Roman") -> bytes:
+    """用 python-docx 创建临时文档，提取其 header XML。字号/字体来自规范，不硬编码。"""
     try:
         from docx import Document
         from docx.oxml import parse_xml
@@ -1043,10 +1047,12 @@ def _make_hdr_xml_via_python_docx(text: str) -> bytes:
         p.clear()
         run = p.add_run(text)
         rPr = run._r.get_or_add_rPr()
-        rFonts = parse_xml(f'<w:rFonts {nsdecls("w")} w:eastAsia="宋体" w:ascii="Times New Roman" w:hAnsi="Times New Roman"/>')
+        rFonts = parse_xml(f'<w:rFonts {nsdecls("w")} w:eastAsia="{font_eastAsia}" w:ascii="{font_ascii}" w:hAnsi="{font_ascii}"/>')
         rPr.insert(0, rFonts)
-        sz = parse_xml(f'<w:sz {nsdecls("w")} w:val="18"/>')
+        sz = parse_xml(f'<w:sz {nsdecls("w")} w:val="{font_size}"/>')
         rPr.append(sz)
+        szCs = parse_xml(f'<w:szCs {nsdecls("w")} w:val="{font_size}"/>')
+        rPr.append(szCs)
         pPr = p._p.get_or_add_pPr()
         pBdr = parse_xml(f'<w:pBdr {nsdecls("w")}><w:bottom w:val="single" w:sz="6" w:space="1" w:color="auto"/></w:pBdr>')
         pPr.append(pBdr)

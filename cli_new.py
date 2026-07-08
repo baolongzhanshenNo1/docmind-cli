@@ -217,8 +217,6 @@ def analyze_cmd(spec_docx, output):
     console.print()
 
     with console.status(f"[cyan]分析规范模板: {spec_path.name}…", spinner="dots"):
-        # Legacy template_analyzer（来自 _archive，功能完好）
-        sys.path.insert(0, str(_project.parent / "_archive" / "docmind"))
         from generator.template_analyzer import analyze_template
 
         import yaml
